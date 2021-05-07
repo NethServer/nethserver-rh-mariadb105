@@ -1,0 +1,11 @@
+[server]
+
+[mysqld]
+
+[galera]
+
+[embedded]
+
+[mariadb]
+
+[mariadb-10.5]

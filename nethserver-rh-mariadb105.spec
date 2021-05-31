@@ -19,12 +19,15 @@ NethServer MariaDB 10.5 configuration
 %setup
 
 %build
+%{__mkdir} -p root/var/log/rh-mariadb105
 perl createlinks
 
 %install
 rm -rf %{buildroot}
 (cd root; find . -depth -print | cpio -dump %{buildroot})
-%{genfilelist} %{buildroot} > %{name}-%{version}-filelist
+%{genfilelist} \
+    --dir   /var/log/rh-mariadb105 'attr(0755,mysql,mysql)' \
+%{buildroot} > %{name}-%{version}-filelist
 
 %post
 

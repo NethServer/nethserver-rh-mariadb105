@@ -1,28 +1,7 @@
-# It's not recommended to modify this file in-place, because it will be
-# overwritten during package upgrades.  If you want to customize, the
-# best way is to create a file "/etc/systemd/system/rh-mariadb105-mariadb.service",
-# containing
-#	.include /usr/lib/systemd/system/rh-mariadb105-mariadb.service
-#	...make your changes here...
-# or create a file "/etc/systemd/system/rh-mariadb105-mariadb.service.d/foo.conf",
-# which doesn't need to include ".include" call and which will be parsed
-# after the file rh-mariadb105-mariadb.service itself is parsed.
-#
-# For more info about custom unit files, see systemd.unit(5) or
-# http://fedoraproject.org/wiki/Systemd#How_do_I_customize_a_unit_file.2F_add_a_custom_unit_file.3F
-
-# For example, if you want to increase mysql's open-files-limit to 10000,
-# you need to increase systemd's LimitNOFILE setting, so create a file named
-# "/etc/systemd/system/rh-mariadb105-mariadb.service.d/limits.conf" containing:
-#	[Service]
-#	LimitNOFILE=10000
-
-# Note: /usr/lib/... is recommended in the .include line though /lib/...
-# still works.
-# Don't forget to reload systemd daemon after you change unit configuration:
-# root> systemctl --system daemon-reload
-
-# Use [mysqld.INSTANCENAME] as sections in my.cnf to configure this instance.
+# NethServer replaces original systemd unit to avoid conflicts with nethserver-mysql
+# This file disabled unit name aliasing:
+#   Alias=mysql.service
+#  Alias=mysqld.service
 
 [Unit]
 Description=MariaDB 10.5 database server

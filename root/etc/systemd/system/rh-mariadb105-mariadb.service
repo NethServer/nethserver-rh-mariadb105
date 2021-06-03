@@ -1,6 +1,6 @@
 # NethServer replaces original systemd unit to avoid conflicts with nethserver-mysql
 # This file disabled unit name aliasing:
-#   Alias=mysql.service
+#  Alias=mysql.service
 #  Alias=mysqld.service
 
 [Unit]
@@ -11,9 +11,6 @@ After=network.target
 
 [Install]
 WantedBy=multi-user.target
-# we must comment it because we use mysqld as alias for mariadb
-#Alias=mysql.service
-#Alias=mysqld.service
 
 [Service]
 Type=notify

@@ -1,0 +1,56 @@
+# NethServer replaces original systemd unit to avoid conflicts with nethserver-mysql
+# This file disabled unit name aliasing:
+#  Alias=mysql.service
+#  Alias=mysqld.service
+
+[Unit]
+Description=MariaDB 10.5 database server
+Documentation=man:mysqld(8)
+Documentation=https://mariadb.com/kb/en/library/systemd/
+After=network.target
+
+[Install]
+WantedBy=multi-user.target
+
+[Service]
+Type=notify
+User=mysql
+Group=mysql
+
+# Load collections set to enabled for this service
+EnvironmentFile=/opt/rh/rh-mariadb105/service-environment
+
+# We want to start server only inside "scl enable" invocation
+ExecStartPre=/usr/bin/scl enable $RH_MARIADB105_SCLS_ENABLED -- /usr/bin/scl_enabled rh-mariadb105
+
+ExecStartPre=/usr/bin/scl enable $RH_MARIADB105_SCLS_ENABLED -- /opt/rh/rh-mariadb105/root/usr/libexec/mysql-check-socket
+# '%n' expands to 'Full unit name'; man systemd.unit
+ExecStartPre=/usr/bin/scl enable $RH_MARIADB105_SCLS_ENABLED -- /opt/rh/rh-mariadb105/root/usr/libexec/mysql-prepare-db-dir %n
+# MYSQLD_OPTS here is for users to set in /etc/systemd/system/rh-mariadb105-mariadb@.service.d/MY_SPECIAL.conf
+# Note: we set --basedir to prevent probes that might trigger SELinux alarms,
+# per bug #547485
+ExecStart=/opt/rh/rh-mariadb105/root/usr/libexec/mysqld-scl-helper enable $RH_MARIADB105_SCLS_ENABLED -- /opt/rh/rh-mariadb105/root/usr/libexec/mysqld --basedir=/opt/rh/rh-mariadb105/root/usr $MYSQLD_OPTS $_WSREP_NEW_CLUSTER
+ExecStartPost=/usr/bin/scl enable $RH_MARIADB105_SCLS_ENABLED -- /opt/rh/rh-mariadb105/root/usr/libexec/mysql-check-upgrade
+
+# Setting this to true can break replication and the Type=notify settings
+# See also bind-address mysqld option.
+PrivateNetwork=false
+
+KillMode=process
+KillSignal=SIGTERM
+
+# Don't want to see an automated SIGKILL ever
+SendSIGKILL=no
+
+# Restart crashed server only, on-failure would also restart, for example, when
+# my.cnf contains unknown option
+Restart=on-abort
+RestartSec=5s
+
+UMask=007
+
+# Give a reasonable amount of time for the server to start up/shut down
+TimeoutSec=300
+
+# Place temp files in a secure directory, not /tmp
+PrivateTmp=true

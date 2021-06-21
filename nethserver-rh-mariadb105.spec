@@ -1,6 +1,6 @@
 Summary: NethServer MariaDB 10.5 configuration
 Name: nethserver-rh-mariadb105
-Version: 0.0.1
+Version: 1.0.0
 Release: 1%{?dist}
 License: GPL
 URL: %{url_prefix}/%{name} 
@@ -39,3 +39,6 @@ rm -rf %{buildroot}
 %dir %{_nseventsdir}/%{name}-update
 
 %changelog
+* Mon Jun 21 2021 Giacomo Sanchietti <giacomo.sanchietti@nethesis.it> - 1.0.0-1
+- Nextcloud 21.0.2 - NethServer/dev#6506
+
